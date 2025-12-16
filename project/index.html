@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nime Gami - 3D & Responsive</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+
+    <style>
+      :root {
+        --primary-orange: #f48c4d;
+        --bg-peach: #fdf0e6;
+        --text-dark: #2d2d2d;
+        --white: #ffffff;
+        --orange: #e96711;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        cursor: none; /* Custom cursor everywhere */
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--bg-peach);
+        color: var(--text-dark);
+        overflow: hidden;
+      }
+
+      /* --- Custom Cursor --- */
+      .cursor {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--primary-orange);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s, height 0.3s, background-color 0.3s;
+        mix-blend-mode: difference;
+      }
+
+      .cursor.active {
+        background-color: var(--primary-orange);
+        width: 50px;
+        height: 50px;
+        opacity: 0.5;
+        border: none;
+      }
+
+      /* --- Glass Header --- */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 5%;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 100;
+        /* Blur Effect */
+        background: rgba(253, 240, 230, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        transition: transform 0.3s ease;
+      }
+
+      .logo {
+        font-weight: 900;
+        font-size: 1.4rem;
+        line-height: 1;
+      }
+      .logo span {
+        color: var(--primary-orange);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-links a {
+        margin-left: 30px;
+        text-decoration: none;
+        color: #444;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: color 0.3s;
+        cursor: pointer;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary-orange);
+      }
+
+      /* Mobile Menu Toggle */
+      .menu-toggle {
+        display: none;
+        font-size: 1.5rem;
+        color: var(--text-dark);
+      }
+
+      /* Mobile Overlay */
+      .mobile-menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--bg-peach);
+        z-index: 99;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.4s ease;
+      }
+
+      .mobile-menu-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .mobile-menu-overlay a {
+        font-size: 2rem;
+        margin: 15px 0;
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 800;
+      }
+
+      /* --- General UI --- */
+      .btn {
+        padding: 12px 35px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        background: var(--primary-orange);
+        color: var(--white);
+        border: none;
+        margin-top: 20px;
+        box-shadow: 0 10px 20px rgba(244, 140, 77, 0.3);
+        transition: transform 0.3s;
+        cursor: pointer;
+      }
+      .btn:hover {
+        transform: translateY(-3px);
+      }
+      .signup-btn:hover {
+        background: var(--white);
+        color: var(--primary-orange);
+        box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
+        border: 2px solid var(--primary-orange);
+      }
+
+
+      /* --- Section 1: Hero --- */
+      .hero {
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        padding: 120px 5% 50px; /* Top padding for fixed header */
+        position: relative;
+      }
+
+      .hero-left,
+      .hero-right {
+        flex: 1;
+        position: relative;
+        z-index: 2;
+      }
+
+      /* 3D Tilt Wrapper */
+      .tilt-box {
+        transform-style: preserve-3d;
+        transform: perspective(1000px);
+      }
+
+      .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 900;
+        line-height: 1.1;
+        text-transform: uppercase;
+      }
+
+      .hero h1 span {
+        color: var(--primary-orange);
+      }
+
+      /* --- Section 2: 3D Swiper --- */
+      .popular-section {
+        display: flex;
+        padding: 80px 0;
+        min-height: 600px;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .popular-label {
+        width: 20%;
+        padding-left: 5%;
+        z-index: 2;
+      }
+
+      .popular-label h2 {
+        font-size: 3rem;
+        line-height: 1;
+        font-weight: 900;
+        -webkit-text-stroke: 1px var(--text-dark);
+        color: transparent;
+      }
+      .popular-label h2 span {
+        color: var(--primary-orange);
+        -webkit-text-stroke: 0;
+      }
+
+      .swiper {
+        width: 80%;
+        height: 450px;
+        padding: 50px 0;
+      }
+
+      .swiper-slide {
+        width: 280px;
+        height: 380px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .swiper-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* --- Section 3: Featured --- */
+      .featured {
+        display: flex;
+        position: relative;
+        padding: 100px 5%;
+        align-items: center;
+      }
+
+      .glass-panel {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 30px;
+        padding: 50px;
+        z-index: 2;
+      }
+
+      .featured-img-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+      }
+
+      .featured-img-wrapper img {
+        width: 100%;
+        max-width: 500px;
+        filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.2));
+      }
+
+      /* --- Footer --- */
+      footer {
+        background: #f4f2f2;
+        color: #0d0c0c;
+        padding: 80px 5% 40px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 60px;
+      }
+
+      .footer-brand h3 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+      .footer-brand p {
+        color: #121212;
+        line-height: 1.6;
+      }
+
+      .footer-col h4 {
+        color: var(--primary-orange);
+        margin-bottom: 20px;
+        font-size: 1.1rem;
+      }
+      .footer-col ul {
+        list-style: none;
+      }
+      .footer-col ul li {
+        margin-bottom: 12px;
+      }
+      .footer-col ul li a {
+        color: #0b0b0b;
+        text-decoration: none;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      .footer-col ul li a:hover {
+        color: var(--orange);
+        padding-left: 5px;
+      }
+
+      .footer-brand span {
+        color: var(--primary-orange);
+      }
+
+      .footer-bottom {
+        border-top: 1px solid #333;
+        padding-top: 30px;
+        display: flex;
+        justify-content: space-between;
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      /* --- Responsive Design --- */
+      @media (max-width: 968px) {
+        /* Navbar */
+        .nav-links {
+          display: none;
+        }
+        .menu-toggle {
+          display: block;
+        }
+
+        /* Hero */
+        .hero {
+          flex-direction: column-reverse;
+          padding-top: 150px;
+          text-align: center;
+        }
+        .hero h1 {
+          font-size: 2.5rem;
+          margin-top: 30px;
+        }
+
+        /* Popular */
+        .popular-section {
+          flex-direction: column;
+          height: auto;
+        }
+        .popular-label {
+          width: 100%;
+          margin-bottom: 30px;
+          text-align: center;
+        }
+        .swiper {
+          width: 100%;
+          padding-left: 20px;
+        }
+
+        /* Featured */
+        .featured {
+          flex-direction: column;
+        }
+        .featured-img-wrapper {
+          margin-top: 50px;
+        }
+
+        /* Footer */
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero h1 {
+          font-size: 2rem;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+        .footer-bottom {
+          flex-direction: column;
+          gap: 10px;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cursor"></div>
+
+    <nav>
+      <div class="logo hover-target">ANIME<span>GAMI</span></div>
+      <div class="nav-links">
+        <a href="#" class="hover-target">Home</a>
+        <a href="#" class="hover-target">Anime</a>
+        <a href="#" class="hover-target">Manga</a>
+        <a
+          href="#"
+          class="btn hover-target signup-btn"
+          style="margin-top: 0; margin-left: 20px; padding: 8px 25px; cursor: pointer;"
+          >Sign In</a
+        >
+      </div>
+      <div class="menu-toggle hover-target">
+        <i class="fas fa-bars"></i>
+      </div>
+    </nav>
+
+    <div class="mobile-menu-overlay">
+      <a href="#" class="hover-target">Home</a>
+      <a href="#" class="hover-target">Anime List</a>
+      <a href="#" class="hover-target">Manga</a>
+      <a href="#" class="hover-target" style="color: var(--primary-orange)"
+        >Sign In</a
+      >
+    </div>
+
+    <div data-scroll-container>
+      <header class="hero" data-scroll-section>
+        <div class="hero-left" data-scroll data-scroll-speed="1">
+          <img
+            src="img/img1.jpg"
+            class="tilt-box hover-target"
+            data-tilt
+            data-tilt-max="15"
+            data-tilt-speed="400"
+            alt="Hero"
+            style="
+              width: 100%;
+              max-width: 450px;
+              height: 600px;
+              border-radius: 20px;
+            "
+          />
+        </div>
+
+        <div class="hero-right" data-scroll data-scroll-speed="2">
+          <h1>Anime<br /><span>Streaming</span><br />Revolution</h1>
+          <p style="margin: 20px 0; color: #666; max-width: 500px">
+            Watch your favorite anime in 4K resolution with zero ads. The
+            ultimate destination for Otakus.
+          </p>
+          <a href="#" class="btn hover-target signup-btn">Start Watching</a>
+        </div>
+      </header>
+
+      <section class="popular-section" data-scroll-section>
+        <div class="popular-label" data-scroll data-scroll-speed="1">
+          <h2>Most<br /><span>Popular</span></h2>
+        </div>
+
+        <div class="swiper mySwiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide hover-target">
+              <img src="img/img1.jpg" alt="Anime" />
+            </div>
+            <div class="swiper-slide hover-target">
+              <img src="img/img2.jpg" alt="Anime" />
+            </div>
+            <div class="swiper-slide hover-target">
+              <img src="img/img3.jpg" alt="Anime" />
+            </div>
+            <div class="swiper-slide hover-target">
+              <img src="img/img4.jpg" alt="Anime" />
+            </div>
+            <div class="swiper-slide hover-target">
+              <img src="img/img5.jpg" alt="Anime" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="featured" data-scroll-section>
+        <div
+          style="
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: var(--primary-orange);
+            clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+            z-index: 1;
+          "
+          data-scroll
+          data-scroll-speed="-1"
+        ></div>
+
+        <div
+          class="glass-panel hover-target"
+          data-scroll
+          data-scroll-speed="1"
+          data-tilt
+          data-tilt-glare
+          data-tilt-max-glare="0.5"
+        >
+          <h2 style="font-size: 2.5rem; color: var(--primary-orange)">
+            Demon Slayer
+          </h2>
+          <p style="margin: 20px 0; color: #444">
+            Tanjiro Kamado sets out to become a demon slayer to avenge his
+            family and cure his sister.
+          </p>
+          <a href="#" class="btn hover-target">Watch S4</a>
+        </div>
+
+        <div
+          class="featured-img-wrapper"
+          style="z-index: 2"
+          data-scroll
+          data-scroll-speed="2"
+        >
+          <img
+            src="img/img2.jpg"
+            alt="Featured"
+            style="
+              width: 100%;
+              max-width: 450px;
+              height: 600px;
+              border-radius: 20px;
+            "
+          />
+        </div>
+      </section>
+
+      <footer data-scroll-section>
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <h3>ANIME<span>GAMI</span></h3>
+            <p>
+              The best streaming platform for anime lovers worldwide. Fast, HD,
+              and completely immersive.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4>Navigate</h4>
+            <ul>
+              <li><a href="#" class="hover-target">Home</a></li>
+              <li><a href="#" class="hover-target">Popular</a></li>
+              <li><a href="#" class="hover-target">New Releases</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="#" class="hover-target">Privacy Policy</a></li>
+              <li><a href="#" class="hover-target">Terms of Service</a></li>
+              <li><a href="#" class="hover-target">Cookie Policy</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Socials</h4>
+            <ul>
+              <li>
+                <a href="#" class="hover-target"
+                  ><i class="fab fa-instagram"></i> Instagram</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover-target"
+                  ><i class="fab fa-twitter"></i> Twitter</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover-target"
+                  ><i class="fab fa-discord"></i> Discord</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span id="date"></span>
+          <span
+            >Made with
+            <i class="fas fa-heart" style="color: var(--primary-orange)"></i>
+            for Anime</span
+          >
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <script>
+      // 1. Initialize Locomotive Scroll
+      const scroll = new LocomotiveScroll({
+        el: document.querySelector("[data-scroll-container]"),
+        smooth: true,
+        tablet: { smooth: true },
+        smartphone: { smooth: true },
+      });
+
+      // 2. Initialize Swiper with 3D Effect
+      var swiper = new Swiper(".mySwiper", {
+        effect: "coverflow",
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: "auto",
+        coverflowEffect: {
+          rotate: 50,
+          stretch: 0,
+          depth: 100,
+          modifier: 1,
+          slideShadows: true,
+        },
+        pagination: {
+          el: ".swiper-pagination",
+        },
+      });
+
+      // 3. Initialize Tilt.js
+      VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+        max: 25,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.5,
+      });
+
+      // 4. Mobile Menu Logic
+      const menuToggle = document.querySelector(".menu-toggle");
+      const overlay = document.querySelector(".mobile-menu-overlay");
+      const overlayLinks = document.querySelectorAll(".mobile-menu-overlay a");
+      let isMenuOpen = false;
+
+      menuToggle.addEventListener("click", () => {
+        isMenuOpen = !isMenuOpen;
+        if (isMenuOpen) {
+          overlay.classList.add("active");
+          menuToggle.innerHTML = '<i class="fas fa-times"></i>'; // Change icon to X
+        } else {
+          overlay.classList.remove("active");
+          menuToggle.innerHTML = '<i class="fas fa-bars"></i>'; // Change icon back
+        }
+      });
+
+      // Close menu when clicking a link
+      overlayLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          isMenuOpen = false;
+          overlay.classList.remove("active");
+          menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+        });
+      });
+
+      // 5. Cursor Logic
+      const cursor = document.querySelector(".cursor");
+      const hoverTargets = document.querySelectorAll(".hover-target");
+
+      document.addEventListener("mousemove", (e) => {
+        cursor.style.left = e.clientX + "px";
+        cursor.style.top = e.clientY + "px";
+      });
+
+      hoverTargets.forEach((target) => {
+        target.addEventListener("mouseenter", () =>
+          cursor.classList.add("active")
+        );
+        target.addEventListener("mouseleave", () =>
+          cursor.classList.remove("active")
+        );
+      });
+
+      // Refresh scroll on load
+      window.addEventListener("load", () => scroll.update());
+      // Sync Swiper and Scroll
+      swiper.on("slideChange", () => scroll.update());
+
+      const dateSpan = document.getElementById("date");
+      const currentYear = new Date().getFullYear();
+      dateSpan.textContent = `© ${currentYear} NimeGami Inc. All rights reserved.`;
+    </script>
+    <canvas id="smokey-fluid-canvas"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/smokey-fluid-cursor@latest/dist/index.global.js"></script>
+
+    <script type="module">
+      window.addEventListener("DOMContentLoaded", () => {
+        if (window.SmokyFluid) {
+          const fluid = SmokyFluid.initFluid();
+        } else {
+          console.error("SmokyFluid not found!");
+        }
+      });
+    </script>
+  </body>
+  <canvas id="smokey-fluid-canvas"></canvas>
+</html>
